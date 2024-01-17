@@ -55,7 +55,7 @@ export function useGetProfiles() {
             (a, b) => b.stargazers_count - a.stargazers_count
           );
 
-          setRepositories(repos.slice(0, 8));
+          setRepositories(repos.slice(0, 6));
           setLoading(false);
         } catch (err) {
           let message = err.statusText || "Ocurrió un error";
