@@ -24,5 +24,4 @@ dist-ssr
 *.sw?
 
 # Keys
-/keys/*.js
-.env
+src/keys/
