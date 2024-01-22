@@ -1,6 +1,11 @@
+import { SearchIcon } from "./Icons";
+
 export default function InputSearch({ onSubmit, searchValue, onChange }) {
   return (
-    <form onSubmit={onSubmit} className="flex items-center m-0 p-0 mt-[1.2rem]">
+    <form
+      onSubmit={onSubmit}
+      className="flex items-center m-0 p-0 mt-[1.2rem] relative"
+    >
       <input
         onChange={onChange}
         value={searchValue}
@@ -9,6 +14,9 @@ export default function InputSearch({ onSubmit, searchValue, onChange }) {
         id="input-search"
         placeholder="Enter Github username..."
       />
+      <button className="absolute right-4">
+        <SearchIcon />
+      </button>
     </form>
   );
 }
