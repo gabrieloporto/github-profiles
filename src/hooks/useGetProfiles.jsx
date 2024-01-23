@@ -3,40 +3,51 @@ import { token } from "../keys/api_keys";
 
 export function useGetProfiles() {
   const [data, setData] = useState(null);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [repositories, setRepositories] = useState(null);
+  const [formError, setFormError] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setLoading(true);
-    if (searchValue) {
+    if (/\s/.test(searchValue)) setFormError("Whitespace is not allowed.");
+    if (searchValue === "") setFormError("The string is empty.");
+
+    if (searchValue && !/\s/.test(searchValue)) {
+      setLoading(true);
       getData(searchValue);
+      setFormError("");
     }
     setSearchValue("");
   };
 
   const handleInputChange = (e) => setSearchValue(e.target.value);
 
+  const handleApiError = (err) => {
+    setError(
+      `Error ${err.status}:
+       ${err.statusText ? err.statusText : "An error occurred"}`
+    );
+    setLoading(false);
+  };
+
   const getData = async (searchValue) => {
     try {
       const res = await fetch(`https://api.github.com/users/${searchValue}`, {
-          headers: {
-            Authorization: `token ${token}`,
-          },
-        }),
-        json = await res.json();
-
-      setData(json);
+        headers: {
+          Authorization: `token ${token}`,
+        },
+      });
 
       if (!res.ok) {
         throw { status: res.status, statusText: res.statusText };
       }
+
+      const json = await res.json();
+      setData(json);
     } catch (err) {
-      let message = err.statusText || "Ocurrió un error";
-      setError(`Error ${err.status}: ${message}`);
-      setLoading(false);
+      handleApiError(err);
     }
   };
 
@@ -49,8 +60,12 @@ export function useGetProfiles() {
               Authorization: `token ${token}`,
             },
           });
-          let json = await res.json();
 
+          if (!res.ok) {
+            throw { status: res.status, statusText: res.statusText };
+          }
+
+          let json = await res.json();
           const repos = json.sort(
             (a, b) => b.stargazers_count - a.stargazers_count
           );
@@ -58,9 +73,7 @@ export function useGetProfiles() {
           setRepositories(repos.slice(0, 6));
           setLoading(false);
         } catch (err) {
-          let message = err.statusText || "Ocurrió un error";
-          setError(`Error ${err.status}: ${message}`);
-          setLoading(false);
+          handleApiError(err);
         }
       };
 
@@ -74,6 +87,7 @@ export function useGetProfiles() {
     loading,
     searchValue,
     repositories,
+    formError,
     handleInputChange,
     handleSubmit,
   };
