@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { token } from "../keys/api_keys";
 
 export function useGetProfiles() {
   const [data, setData] = useState(null);
@@ -36,7 +35,7 @@ export function useGetProfiles() {
     try {
       const res = await fetch(`https://api.github.com/users/${searchValue}`, {
         headers: {
-          Authorization: `token ${token}`,
+          Authorization: `token ${import.meta.env.VITE_GIT_TOKEN}`,
         },
       });
 
@@ -57,7 +56,7 @@ export function useGetProfiles() {
         try {
           let res = await fetch(data.repos_url, {
             headers: {
-              Authorization: `token ${token}`,
+              Authorization: `token ${import.meta.env.VITE_GIT_TOKEN}`,
             },
           });
 
