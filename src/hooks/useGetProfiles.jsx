@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const git_token = process.env.GIT_TOKEN;
+const git_token = import.meta.env.VITE_GIT_TOKEN;
 
 export function useGetProfiles() {
   const [data, setData] = useState(null);
